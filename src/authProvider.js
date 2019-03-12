@@ -5,10 +5,9 @@ const CLIENT_ID = 'DfGQBxljWI8jrkAtVil5g4w0SYdieh1e1MNmmdvC';
 const CLIENT_SECRET = 'tikHWCJfK48Z47nnlE7G3kPdNKxnL86OeP8of38Wj0Z02FMq9HSbXtkg65uNN7EZAvjkM4HqIWngyc0RgFWVy9IlUYhCdcxI14Nd6quHJpYy9IZMfHqqK5f7E7fuYLn5';
 
 export default (type, params) => {
-    // called when the user attempts to log in
     if (type === AUTH_LOGIN) {
+        // Get OAuth 2.0 access token.
         const { username, password } = params;
-
         var data = new URLSearchParams();
         data.append('username', username);
         data.append('password', password);
@@ -28,17 +27,12 @@ export default (type, params) => {
         fetch(request).then(response => {
             console.log(request, response);
         });
-
-        // localStorage.setItem('username', username);
-        // accept all username/password combinations
         return Promise.resolve();
     }
-    // called when the user clicks on the logout button
     if (type === AUTH_LOGOUT) {
         localStorage.removeItem('username');
         return Promise.resolve();
     }
-    // called when the API returns an error
     if (type === AUTH_ERROR) {
         const { status } = params;
         if (status === 401 || status === 403) {
@@ -47,7 +41,6 @@ export default (type, params) => {
         }
         return Promise.resolve();
     }
-    // called when the user navigates to a new location
     if (type === AUTH_CHECK) {
         return localStorage.getItem('username')
             ? Promise.resolve()
