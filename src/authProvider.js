@@ -1,10 +1,35 @@
 import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
 
+const API_ROOT = 'http://localhost:8000/api';
+const CLIENT_ID = 'DfGQBxljWI8jrkAtVil5g4w0SYdieh1e1MNmmdvC';
+const CLIENT_SECRET = 'tikHWCJfK48Z47nnlE7G3kPdNKxnL86OeP8of38Wj0Z02FMq9HSbXtkg65uNN7EZAvjkM4HqIWngyc0RgFWVy9IlUYhCdcxI14Nd6quHJpYy9IZMfHqqK5f7E7fuYLn5';
+
 export default (type, params) => {
     // called when the user attempts to log in
     if (type === AUTH_LOGIN) {
-        const { username } = params;
-        localStorage.setItem('username', username);
+        const { username, password } = params;
+
+        var data = new URLSearchParams();
+        data.append('username', username);
+        data.append('password', password);
+        data.append('grant_type', 'password');
+        var credentials = window.btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
+        var headers  = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + credentials,
+        }
+        const options = {
+            method: 'POST',
+            body: data.toString(),
+            headers: new Headers(headers),
+        }
+        const url = `${API_ROOT}/token/`;
+        const request = new Request(url, options);
+        fetch(request).then(response => {
+            console.log(request, response);
+        });
+
+        // localStorage.setItem('username', username);
         // accept all username/password combinations
         return Promise.resolve();
     }
